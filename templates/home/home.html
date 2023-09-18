@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block homeactive %}active{% endblock homeactive %}
+
+{% block js %}
+<script>
+    // This will convert all the content of preview from HTML to plain text
+    let previews = document.getElementsByClassName('preview');
+    Array.from(previews).forEach((element)=>{
+        element.innerHTML = element.innerText;
+    });
+</script>
+{% endblock js %}
+
+{% block body %}
+   
+{% for popular in popPost %}
+    <div class="container">
+        <div class="card flex-md-row mb-4 box-shadow h-md-250 my-4 post-relative" style="background-color:#e9ecef;">
+            <div class="card-body p-4 d-flex flex-column align-items-start">
+                <strong class="d-inline-block mb-2 text-primary"> Written By {{popular.author}}</strong></a>
+                <h3 class="mb-2">
+                    <a class="text-dark" href="/blog/{{popular.slug}}">{{popular.title}}</a>
+                </h3>
+                <div class="mb-1 text-muted">{{popular.timeStamp}}</div>
+                <div class="preview">
+                    <p class="card-text mb-auto">{{popular.content|safe|truncatechars:300}}</p>
+                </div>
+                <a href="/blog/{{popular.slug}}">Continue to post..</a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- Center-align the pagination controls both horizontally and vertically -->
+<div class="pagination-container text-center d-flex justify-content-center align-items-center">
+    <span class="step-links">
+        {% if popPost.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ popPost.previous_page_number }}">previous</a>
+        {% endif %}
+        
+        <span class="current-page">
+            Page {{ popPost.number }} of {{ popPost.paginator.num_pages }}
+        </span>
+        
+        {% if popPost.has_next %}
+            <a href="?page={{ popPost.next_page_number }}">next</a>
+            <a href="?page={{ popPost.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock body %}
